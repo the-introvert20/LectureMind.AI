@@ -1,0 +1,76 @@
+{
+  "mcq": [
+    {
+      "question": "Which statement best describes: The stale smell?",
+      "options": [
+        "It introduces The stale smell",
+        "It contradicts The stale smell",
+        "It expands on The stale smell",
+        "It is unrelated"
+      ],
+      "answer": "It introduces The stale smell"
+    },
+    {
+      "question": "Which statement best describes: It takes heat?",
+      "options": [
+        "It introduces It takes heat",
+        "It contradicts It takes heat",
+        "It expands on It takes heat",
+        "It is unrelated"
+      ],
+      "answer": "It introduces It takes heat"
+    },
+    {
+      "question": "Which statement best describes: A cold dip?",
+      "options": [
+        "It introduces A cold dip",
+        "It contradicts A cold dip",
+        "It expands on A cold dip",
+        "It is unrelated"
+      ],
+      "answer": "It introduces A cold dip"
+    },
+    {
+      "question": "Which statement best describes: A salt pickle?",
+      "options": [
+        "It introduces A salt pickle",
+        "It contradicts A salt pickle",
+        "It expands on A salt pickle",
+        "It is unrelated"
+      ],
+      "answer": "It introduces A salt pickle"
+    },
+    {
+      "question": "Which statement best describes: Tacos al pastor?",
+      "options": [
+        "It introduces Tacos al pastor",
+        "It contradicts Tacos al pastor",
+        "It expands on Tacos al pastor",
+        "It is unrelated"
+      ],
+      "answer": "It introduces Tacos al pastor"
+    }
+  ],
+  "short": [
+    {
+      "question": "Briefly explain: The stale smell of old beer lingers...",
+      "answer": "Key idea as discussed in the lecture."
+    },
+    {
+      "question": "Briefly explain: It takes heat to bring out the odor...",
+      "answer": "Key idea as discussed in the lecture."
+    },
+    {
+      "question": "Briefly explain: A cold dip restores health and zest...",
+      "answer": "Key idea as discussed in the lecture."
+    },
+    {
+      "question": "Briefly explain: A salt pickle tastes fine with ham...",
+      "answer": "Key idea as discussed in the lecture."
+    },
+    {
+      "question": "Briefly explain: Tacos al pastor are my favorite...",
+      "answer": "Key idea as discussed in the lecture."
+    }
+  ]
+}
