@@ -1,5 +1,6 @@
 import os
 import json
+import shutil
 from datetime import datetime
 import streamlit as st
 
@@ -13,6 +14,7 @@ from utils.text_cleaner import clean_transcript
 from llm.summarizer import generate_notes
 from llm.flashcards import generate_flashcards
 from llm.quiz_generator import generate_quiz
+from llm.concept_identifier import identify_concepts, filter_concepts
 from rag.embeddings import EmbeddingModel
 from rag.vector_store import LectureVectorStore
 from rag.chat import answer_question
@@ -174,12 +176,15 @@ def init_session_state():
         st.session_state.flashcards = []
     if "quiz" not in st.session_state:
         st.session_state.quiz = {"mcq": [], "short": []}
+    if "concepts" not in st.session_state:
+        st.session_state.concepts = []
 
 
 def main():
     st.set_page_config(page_title="LectureMind AI", layout="wide")
     ensure_dirs()
     init_session_state()
+    ffmpeg_available = shutil.which("ffmpeg") is not None
 
     st.title("LectureMind AI — AI-powered Learning Companion")
     st.caption("Upload lectures, auto-generate study materials, and chat with your content.")
@@ -199,9 +204,22 @@ def main():
             st.code(os.path.join(DATA_DIRS["raw"], f"{st.session_state.lecture_id}.txt"))
             st.code(os.path.join(DATA_DIRS["cleaned"], f"{st.session_state.lecture_id}.txt"))
 
+        st.divider()
+        if st.button("Clear Cache / Reset App"):
+            st.cache_data.clear()
+            st.cache_resource.clear()
+            st.session_state.clear()
+            st.rerun()
+
     # 1) Audio Upload
     st.header("1️⃣ Audio Upload")
-    uploaded = st.file_uploader("Upload lecture audio (.mp3/.wav)", type=["mp3", "wav"])
+    upload_types = ["wav", "mp3"] if ffmpeg_available else ["wav"]
+    uploaded = st.file_uploader(
+        "Upload lecture audio (.mp3/.wav)" if ffmpeg_available else "Upload lecture audio (.wav only)",
+        type=upload_types,
+    )
+    if not ffmpeg_available:
+        st.info("MP3 requires FFmpeg. Install FFmpeg (add to PATH) or upload a .wav file.")
     if uploaded:
         if not st.session_state.lecture_id:
             # Auto-assign Lecture ID so users can upload immediately
@@ -240,7 +258,10 @@ def main():
         ]
         audio_path = next((p for p in audio_candidates if os.path.exists(p)), None)
         if audio_path:
-            if st.button("Transcribe Audio"):
+            needs_ffmpeg = audio_path.lower().endswith(".mp3") and not ffmpeg_available
+            if needs_ffmpeg:
+                st.error("This lecture is saved as .mp3, but FFmpeg is not available. Install FFmpeg or upload .wav.")
+            if st.button("Transcribe Audio", disabled=needs_ffmpeg):
                 try:
                     raw_text = transcribe_audio(audio_path, language=stt_language)
                     st.session_state.raw_transcript = raw_text
@@ -265,13 +286,26 @@ def main():
         except Exception as e:
             st.error(f"Cleaning failed: {e}")
 
-    # 4) AI Content Generation
-    st.header("4️⃣ AI Content Generation")
+    # 4) Concept Identification
+    st.header("4️⃣ Concept Identification & Filtering")
+    if st.button("Identify Key Concepts"):
+        try:
+            raw_concepts = identify_concepts(st.session_state.cleaned_transcript or st.session_state.raw_transcript)
+            filtered = filter_concepts(raw_concepts)
+            st.session_state.concepts = filtered
+            st.success(f"Identified concepts: {', '.join(filtered)}")
+        except Exception as e:
+            st.error(f"Concept identification failed: {e}")
+    
+    st.session_state.concepts = st.multiselect("Active Concepts (Editable)", options=st.session_state.concepts, default=st.session_state.concepts)
+
+    # 5) AI Content Generation
+    st.header("5️⃣ AI Content Generation")
     col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("Generate Notes"):
             try:
-                notes_md = generate_notes(st.session_state.cleaned_transcript or st.session_state.raw_transcript)
+                notes_md = generate_notes(st.session_state.cleaned_transcript or st.session_state.raw_transcript, concepts=st.session_state.concepts)
                 st.session_state.notes_md = notes_md
                 notes_path = os.path.join(PROJECT_ROOT, "llm", "outputs", f"{st.session_state.lecture_id}_notes.md")
                 save_text(notes_path, notes_md)
@@ -281,7 +315,7 @@ def main():
     with col2:
         if st.button("Generate Flashcards"):
             try:
-                cards = generate_flashcards(st.session_state.cleaned_transcript or st.session_state.raw_transcript)
+                cards = generate_flashcards(st.session_state.cleaned_transcript or st.session_state.raw_transcript, concepts=st.session_state.concepts)
                 st.session_state.flashcards = cards
                 fc_path = os.path.join(PROJECT_ROOT, "llm", "outputs", f"{st.session_state.lecture_id}_flashcards.json")
                 os.makedirs(os.path.dirname(fc_path), exist_ok=True)
@@ -293,7 +327,7 @@ def main():
     with col3:
         if st.button("Generate Quiz"):
             try:
-                quiz = generate_quiz(st.session_state.cleaned_transcript or st.session_state.raw_transcript)
+                quiz = generate_quiz(st.session_state.cleaned_transcript or st.session_state.raw_transcript, concepts=st.session_state.concepts)
                 st.session_state.quiz = quiz
                 quiz_path = os.path.join(PROJECT_ROOT, "llm", "outputs", f"{st.session_state.lecture_id}_quiz.json")
                 os.makedirs(os.path.dirname(quiz_path), exist_ok=True)
@@ -328,8 +362,8 @@ def main():
         else:
             st.write("No quiz yet.")
 
-    # 5) RAG Pipeline - Build Index
-    st.header("5️⃣ RAG Pipeline — Build FAISS Index")
+    # 6) RAG Pipeline - Build Index
+    st.header("6️⃣ RAG Pipeline — Build FAISS Index")
     if st.button("Build/Search Index"):
         try:
             store = build_index_for_lecture(
@@ -341,8 +375,8 @@ def main():
         except Exception as e:
             st.error(f"Index build failed: {e}")
 
-    # 6) Chat with Lecture
-    st.header("6️⃣ Chat with Lecture")
+    # 7) Chat with Lecture
+    st.header("7️⃣ Chat with Lecture")
     question = st.text_input("Ask a question about this lecture:")
     if st.button("Answer Question") and question.strip():
         try:
@@ -356,7 +390,7 @@ def main():
         except Exception as e:
             st.error(f"Chat failed: {e}")
 
-    st.header("7️⃣ Transcript Viewer")
+    st.header("8️⃣ Transcript Viewer")
     st.text_area("Cleaned Transcript", value=st.session_state.cleaned_transcript, height=300)
 
 

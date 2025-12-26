@@ -26,7 +26,7 @@ def _fallback_flashcards(text: str, num_cards: int = 10) -> List[Dict[str, str]]
     return cards
 
 
-def generate_flashcards(text: str, num_cards: int = 10) -> List[Dict[str, str]]:
+def generate_flashcards(text: str, num_cards: int = 10, concepts: list = None) -> List[Dict[str, str]]:
     api_key = os.environ.get("OPENAI_API_KEY")
     api_base = os.environ.get("OPENAI_API_BASE", "https://api.openai.com/v1")
     model = os.environ.get("OPENAI_MODEL", "gpt-3.5-turbo")
@@ -34,12 +34,14 @@ def generate_flashcards(text: str, num_cards: int = 10) -> List[Dict[str, str]]:
     if not text or not text.strip():
         return [{"question": "No content provided.", "answer": "Upload and process a lecture first."}]
 
+    concept_str = f" focusing on these identified concepts: {', '.join(concepts)}" if concepts else ""
+
     if api_key:
         try:
             import requests
             prompt = (
-                "Generate concise flashcards (Q&A) from the following lecture content. "
-                f"Return {num_cards} cards.\n\nContent:\n" + text
+                f"Generate concise concept-based flashcards (Q&A) from the following lecture content{concept_str}. "
+                f"Each card should test a specific concept or technical detail. Return {num_cards} cards.\n\nContent:\n" + text
             )
             headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
             payload = {

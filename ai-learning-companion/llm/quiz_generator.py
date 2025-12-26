@@ -35,7 +35,7 @@ def _fallback_quiz(text: str, num_mcq: int = 5, num_short: int = 5) -> Dict[str,
     return {"mcq": mcq, "short": short}
 
 
-def generate_quiz(text: str, num_mcq: int = 5, num_short: int = 5) -> Dict[str, List[Dict[str, str]]]:
+def generate_quiz(text: str, num_mcq: int = 5, num_short: int = 5, concepts: list = None) -> Dict[str, List[Dict[str, str]]]:
     api_key = os.environ.get("OPENAI_API_KEY")
     api_base = os.environ.get("OPENAI_API_BASE", "https://api.openai.com/v1")
     model = os.environ.get("OPENAI_MODEL", "gpt-3.5-turbo")
@@ -43,11 +43,13 @@ def generate_quiz(text: str, num_mcq: int = 5, num_short: int = 5) -> Dict[str, 
     if not text or not text.strip():
         return _fallback_quiz("", num_mcq, num_short)
 
+    concept_str = f" emphasizing these key ideas/concepts: {', '.join(concepts)}" if concepts else ""
+
     if api_key:
         try:
             import requests
             prompt = (
-                "Generate quiz questions from the lecture content. Return two sections: "
+                f"Generate an idea-based quiz from the lecture content{concept_str}. Return two sections: "
                 f"(1) {num_mcq} MCQs with 4 options and an answers key, (2) {num_short} short-answer questions. "
                 "Use JSON-like structure.\n\nContent:\n" + text
             )

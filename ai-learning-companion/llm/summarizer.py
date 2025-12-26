@@ -23,7 +23,7 @@ def _fallback_notes_md(transcript: str) -> str:
     return "\n".join(md)
 
 
-def generate_notes(transcript: str) -> str:
+def generate_notes(transcript: str, concepts: list = None) -> str:
     """Generate structured notes (Markdown). Uses OpenAI-compatible API if available, else heuristic fallback."""
     api_key = os.environ.get("OPENAI_API_KEY")
     api_base = os.environ.get("OPENAI_API_BASE", "https://api.openai.com/v1")
@@ -32,12 +32,14 @@ def generate_notes(transcript: str) -> str:
     if not transcript or not transcript.strip():
         return "# Notes\n\nTranscript empty."
 
+    concept_str = f" focusing on these key concepts: {', '.join(concepts)}" if concepts else ""
+
     if api_key:
         try:
             import requests
             prompt = (
-                "Create well-structured study notes from this lecture transcript. "
-                "Use headings and bullet points (Markdown).\n\nTranscript:\n" + transcript
+                f"Create well-structured study notes from this lecture transcript{concept_str}. "
+                "Use headings and bullet points (Markdown). Organize the notes by major concepts.\n\nTranscript:\n" + transcript
             )
             headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
             payload = {
