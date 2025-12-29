@@ -35,19 +35,35 @@ def _fix_punctuation(text: str) -> str:
 
 
 def _split_into_paragraphs(text: str, max_len: int = 800) -> str:
-    # Split by existing newlines first
-    lines = [l.strip() for l in text.split("\n") if l.strip()]
-    if not lines:
-        lines = [text.strip()]
+    # Normalize spacing
+    text = re.sub(r"\s+", " ", text).strip()
+    if not text:
+        return ""
 
+    # Split into sentences using a simple regex (handles . ! ?)
+    # We look for punctuation followed by a space and a capital letter
+    sentences = re.split(r'(?<=[.!?])\s+', text)
+    
     paragraphs = []
-    for line in lines:
-        start = 0
-        while start < len(line):
-            end = min(start + max_len, len(line))
-            chunk = line[start:end]
-            paragraphs.append(chunk)
-            start = end
+    current_para = []
+    current_len = 0
+    
+    for sentence in sentences:
+        sentence_len = len(sentence)
+        
+        # If adding this sentence exceeds max_len, start a new paragraph
+        if current_len + sentence_len > max_len and current_para:
+            paragraphs.append(" ".join(current_para))
+            current_para = [sentence]
+            current_len = sentence_len
+        else:
+            current_para.append(sentence)
+            current_len += sentence_len + 1 # +1 for the space
+            
+    # Add the last paragraph
+    if current_para:
+        paragraphs.append(" ".join(current_para))
+        
     return "\n\n".join(paragraphs)
 
 

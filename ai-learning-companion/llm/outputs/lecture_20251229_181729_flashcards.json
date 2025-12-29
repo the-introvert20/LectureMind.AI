@@ -1,0 +1,126 @@
+[
+  {
+    "question": "Okay, here are 10 concise flashcards based on the lecture content, designed to test understanding of key concepts",
+    "answer": ""
+  },
+  {
+    "question": "**Flashcard 1",
+    "answer": "Definition**"
+  },
+  {
+    "question": "*   **Question",
+    "answer": "** What is an algorithm?"
+  },
+  {
+    "question": "*   **Answer",
+    "answer": "** A step-by-step procedure for solving a computational problem."
+  },
+  {
+    "question": "**Flashcard 2",
+    "answer": "Program vs. Algorithm**"
+  },
+  {
+    "question": "*   **Question",
+    "answer": "** What’s the key difference between a program and an algorithm?"
+  },
+  {
+    "question": "*   **Answer",
+    "answer": "** A program is a complete solution; an algorithm is a procedure for solving a problem."
+  },
+  {
+    "question": "**Flashcard 3",
+    "answer": "Importance of Algorithms**"
+  },
+  {
+    "question": "*   **Question",
+    "answer": "** Why is the study of algorithms important?"
+  },
+  {
+    "question": "*   **Answer",
+    "answer": "**  It’s crucial for competitive exams, programming contests, and software engineering projects."
+  },
+  {
+    "question": "**Flashcard 4",
+    "answer": "Job Interview Focus**"
+  },
+  {
+    "question": "*   **Question",
+    "answer": "**  What types of questions in job interviews are often framed around algorithms?"
+  },
+  {
+    "question": "*   **Answer",
+    "answer": "** Questions that require problem-solving skills and algorithmic thinking."
+  },
+  {
+    "question": "**Flashcard 5",
+    "answer": "Design Phase**"
+  },
+  {
+    "question": "*   **Question",
+    "answer": "**  What is the first step in the design phase of software development?"
+  },
+  {
+    "question": "*   **Answer",
+    "answer": "** Designing the algorithm – creating a plan for the solution."
+  },
+  {
+    "question": "**Flashcard 6",
+    "answer": "Implementation Phase**"
+  },
+  {
+    "question": "*   **Question",
+    "answer": "** What happens after designing?"
+  },
+  {
+    "question": "*   **Answer",
+    "answer": "**  Writing the program."
+  },
+  {
+    "question": "**Flashcard 7",
+    "answer": "Program vs. Algorithm – Key Difference**"
+  },
+  {
+    "question": "*   **Question",
+    "answer": "**  What is the core difference between a program and an algorithm?"
+  },
+  {
+    "question": "*   **Answer",
+    "answer": "**  A program is a complete solution; an algorithm is a procedure for solving a problem."
+  },
+  {
+    "question": "**Flashcard 8",
+    "answer": "Programming Language**"
+  },
+  {
+    "question": "*   **Question",
+    "answer": "** Which language is commonly used for writing algorithms?"
+  },
+  {
+    "question": "*   **Answer",
+    "answer": "** Any language with English-like syntax."
+  },
+  {
+    "question": "**Flashcard 9",
+    "answer": "Who Writes Algorithms?**"
+  },
+  {
+    "question": "*   **Question",
+    "answer": "**  Who is responsible for writing algorithms?"
+  },
+  {
+    "question": "*   **Answer",
+    "answer": "** Programmers and domain experts."
+  },
+  {
+    "question": "**Flashcard 10",
+    "answer": "Understanding the Algorithm**"
+  },
+  {
+    "question": "*   **Question",
+    "answer": "**  What is the most important thing to do when writing an algorithm?"
+  },
+  {
+    "question": "*   **Answer",
+    "answer": "**  Analyze the algorithm to find efficiency and to understand the results."
+  }
+]

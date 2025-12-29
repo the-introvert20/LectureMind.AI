@@ -6,19 +6,24 @@ from typing import List, Dict
 def identify_concepts(text: str) -> List[str]:
     """Identify key concepts from the transcript using LLM or heuristic."""
     api_key = os.environ.get("OPENAI_API_KEY")
-    api_base = os.environ.get("OPENAI_API_BASE", "https://api.openai.com/v1")
-    model = os.environ.get("OPENAI_MODEL", "gpt-3.5-turbo")
+    api_base = os.environ.get("OPENAI_API_BASE", "http://localhost:11434/v1")
+    model = os.environ.get("OPENAI_MODEL", "gemma3:1b")
+    
+    is_local = "localhost" in api_base or "127.0.0.1" in api_base
 
     if not text or not text.strip():
         return []
 
-    if api_key:
+    if api_key or is_local:
         try:
             prompt = (
                 "Identify the most important technical concepts, ideas, or topics from this lecture transcript. "
                 "Return a comma-separated list of 5-10 concepts.\n\nTranscript:\n" + text
             )
-            headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+            headers = {"Content-Type": "application/json"}
+            if api_key:
+                headers["Authorization"] = f"Bearer {api_key}"
+                
             payload = {
                 "model": model,
                 "messages": [
@@ -33,7 +38,8 @@ def identify_concepts(text: str) -> List[str]:
             content = data["choices"][0]["message"]["content"].strip()
             concepts = [c.strip() for c in content.split(",") if c.strip()]
             return concepts
-        except Exception:
+        except Exception as e:
+            print(f"Concept identification AI failed: {e}")
             return _heuristic_concepts(text)
     else:
         return _heuristic_concepts(text)

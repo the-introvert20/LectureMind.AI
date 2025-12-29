@@ -36,16 +36,19 @@ def _fallback_quiz(text: str, num_mcq: int = 5, num_short: int = 5) -> Dict[str,
 
 
 def generate_quiz(text: str, num_mcq: int = 5, num_short: int = 5, concepts: list = None) -> Dict[str, List[Dict[str, str]]]:
+    """Generate quiz using Cloud or Local AI."""
     api_key = os.environ.get("OPENAI_API_KEY")
-    api_base = os.environ.get("OPENAI_API_BASE", "https://api.openai.com/v1")
-    model = os.environ.get("OPENAI_MODEL", "gpt-3.5-turbo")
+    api_base = os.environ.get("OPENAI_API_BASE", "http://localhost:11434/v1")
+    model = os.environ.get("OPENAI_MODEL", "gemma3:1b")
+    
+    is_local = "localhost" in api_base or "127.0.0.1" in api_base
 
     if not text or not text.strip():
         return _fallback_quiz("", num_mcq, num_short)
 
     concept_str = f" emphasizing these key ideas/concepts: {', '.join(concepts)}" if concepts else ""
 
-    if api_key:
+    if api_key or is_local:
         try:
             import requests
             prompt = (
@@ -53,7 +56,10 @@ def generate_quiz(text: str, num_mcq: int = 5, num_short: int = 5, concepts: lis
                 f"(1) {num_mcq} MCQs with 4 options and an answers key, (2) {num_short} short-answer questions. "
                 "Use JSON-like structure.\n\nContent:\n" + text
             )
-            headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
+            headers = {"Content-Type": "application/json"}
+            if api_key:
+                headers["Authorization"] = f"Bearer {api_key}"
+                
             payload = {
                 "model": model,
                 "messages": [
@@ -76,7 +82,8 @@ def generate_quiz(text: str, num_mcq: int = 5, num_short: int = 5, concepts: lis
                 return {"mcq": mcq, "short": short}
             except Exception:
                 return _fallback_quiz(text, num_mcq, num_short)
-        except Exception:
+        except Exception as e:
+            print(f"Quiz AI failed: {e}")
             return _fallback_quiz(text, num_mcq, num_short)
     else:
         return _fallback_quiz(text, num_mcq, num_short)

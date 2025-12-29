@@ -54,3 +54,4 @@ ai-learning-companion/
 
 ## More Details
 See `ai-learning-companion/README.md` for in-depth architecture, workflow diagram, and resume-ready project description.
+

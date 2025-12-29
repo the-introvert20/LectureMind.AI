@@ -205,7 +205,48 @@ def main():
             st.code(os.path.join(DATA_DIRS["cleaned"], f"{st.session_state.lecture_id}.txt"))
 
         st.divider()
-        if st.button("Clear Cache / Reset App"):
+        # --- Sidebar AI Settings ---
+        st.header("🤖 AI Settings")
+        ai_mode = st.radio("AI Source", ["Local AI (Gemma 3)", "Cloud AI (OpenAI)"], index=0)
+        
+        if ai_mode == "Cloud AI (OpenAI)":
+            api_key = st.text_input("OpenAI API Key", type="password", value=os.environ.get("OPENAI_API_KEY", ""))
+            api_base = st.text_input("API Base URL", value="https://api.openai.com/v1")
+            model_name = st.text_input("Model Name", value="gpt-3.5-turbo")
+            if api_key:
+                os.environ["OPENAI_API_KEY"] = api_key
+                os.environ["OPENAI_API_BASE"] = api_base
+                os.environ["OPENAI_MODEL"] = model_name
+        else:
+            # Local AI Settings (Gemma via Ollama)
+            local_base = st.sidebar.text_input("Local API URL", value="http://localhost:11434/v1")
+            local_model = st.sidebar.text_input("Local Model", value="gemma3:1b")
+            os.environ["OPENAI_API_BASE"] = local_base
+            os.environ["OPENAI_MODEL"] = local_model
+            
+            # Test Connection Button
+            if st.button("🔌 Test Local AI Connection"):
+                try:
+                    import requests
+                    # Try to list models from Ollama
+                    resp = requests.get(local_base.replace("/v1", "/api/tags"), timeout=5)
+                    if resp.status_code == 200:
+                        models = [m['name'] for m in resp.json().get('models', [])]
+                        if local_model in models or any(local_model in m for m in models):
+                            st.success(f"✅ Connected! Found: {local_model}")
+                        else:
+                            st.warning(f"⚠️ Connected, but model '{local_model}' not found in: {models}")
+                    else:
+                        st.error(f"❌ Connection failed (Status: {resp.status_code})")
+                except Exception as e:
+                    st.error(f"❌ Connection failed: {e}")
+
+            # Clear API key for local mode to avoid confusion
+            if "OPENAI_API_KEY" in os.environ:
+                del os.environ["OPENAI_API_KEY"]
+
+        st.divider()
+        if st.button("🗑️ Clear Cache"):
             st.cache_data.clear()
             st.cache_resource.clear()
             st.session_state.clear()

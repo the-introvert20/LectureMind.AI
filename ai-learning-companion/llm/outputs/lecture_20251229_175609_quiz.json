@@ -1,0 +1,76 @@
+{
+  "mcq": [
+    {
+      "question": "Which statement best describes: Hello friends, I?",
+      "options": [
+        "It introduces Hello friends, I",
+        "It contradicts Hello friends, I",
+        "It expands on Hello friends, I",
+        "It is unrelated"
+      ],
+      "answer": "It introduces Hello friends, I"
+    },
+    {
+      "question": "Which statement best describes: Algorithms as a?",
+      "options": [
+        "It introduces Algorithms as a",
+        "It contradicts Algorithms as a",
+        "It expands on Algorithms as a",
+        "It is unrelated"
+      ],
+      "answer": "It introduces Algorithms as a"
+    },
+    {
+      "question": "Which statement best describes: Algorithms are a?",
+      "options": [
+        "It introduces Algorithms are a",
+        "It contradicts Algorithms are a",
+        "It expands on Algorithms are a",
+        "It is unrelated"
+      ],
+      "answer": "It introduces Algorithms are a"
+    },
+    {
+      "question": "Which statement best describes: Most of the?",
+      "options": [
+        "It introduces Most of the",
+        "It contradicts Most of the",
+        "It expands on Most of the",
+        "It is unrelated"
+      ],
+      "answer": "It introduces Most of the"
+    },
+    {
+      "question": "Which statement best describes: And this is?",
+      "options": [
+        "It introduces And this is",
+        "It contradicts And this is",
+        "It expands on And this is",
+        "It is unrelated"
+      ],
+      "answer": "It introduces And this is"
+    }
+  ],
+  "short": [
+    {
+      "question": "Briefly explain: Hello friends, I am going to start our course on algorithms...",
+      "answer": "Key idea as discussed in the lecture."
+    },
+    {
+      "question": "Briefly explain: Algorithms as a subject...",
+      "answer": "Key idea as discussed in the lecture."
+    },
+    {
+      "question": "Briefly explain: Algorithms are a common subject for computer science enginee...",
+      "answer": "Key idea as discussed in the lecture."
+    },
+    {
+      "question": "Briefly explain: Most of the universities offer this course as a part of syll...",
+      "answer": "Key idea as discussed in the lecture."
+    },
+    {
+      "question": "Briefly explain: And this is a very core subject and very important subject...",
+      "answer": "Key idea as discussed in the lecture."
+    }
+  ]
+}
